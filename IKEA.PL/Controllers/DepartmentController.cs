@@ -195,7 +195,5 @@ namespace IKEA.PL.Controllers
             ModelState.AddModelError("", message);
             return RedirectToAction(nameof(Delete), new { id = Id });
         }
-        
-
     }
 }
