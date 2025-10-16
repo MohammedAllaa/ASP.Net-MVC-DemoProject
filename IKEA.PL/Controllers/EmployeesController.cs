@@ -1,59 +1,65 @@
 ﻿using IKEA.BLL.Dto_s.DepartmentDto_s;
-using IKEA.BLL.Services.DepartmentServices;
+using IKEA.BLL.Dto_s.EmployeeDto_s;
+using IKEA.BLL.Services.EmployeeServices;
+using IKEA.DAL.Models.Employee;
 using IKEA.PL.ViewModel.DepartmentVMs;
+using Microsoft.AspNetCore;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 
 namespace IKEA.PL.Controllers
 {
-    public class DepartmentController : Controller
+    public class EmployeesController : Controller
     {
-        private readonly IDepartmentServices _departmentServices;
-        private readonly ILogger<DepartmentController> logger;
-        private readonly IWebHostEnvironment webHOst;
+        private readonly IEmployeeServices employeeServices;
+        private readonly ILogger<EmployeesController> logger;
+        private readonly IWebHostEnvironment enviroment;
 
-        public DepartmentController(IDepartmentServices department, ILogger<DepartmentController> logger, IWebHostEnvironment webHOst)
+        public EmployeesController(IEmployeeServices employeeServices,ILogger<EmployeesController> logger,IWebHostEnvironment enviroment)
         {
-            _departmentServices = department;
+            this.employeeServices = employeeServices;
             this.logger = logger;
-            this.webHOst = webHOst;
+            this.enviroment = enviroment;
         }
 
         public IActionResult Index()
         {
-            var departments = _departmentServices.GetAllDepartments();
-            return View(departments);
+            var Employees = employeeServices.GetAllEmployees();
+            return View(Employees);
         }
-
         [HttpGet]
-        public IActionResult Create() => View();
+        public IActionResult Create()
+        {
+            return View();
+        }
 
         [HttpPost]
 
-        public IActionResult Create(CreateDepartmentDto departmentDto)
+        public IActionResult Create(CreatedEmployeeDto dto)
         {
             if (ModelState.IsValid)
             {
                 try
                 {
-                    int result = _departmentServices.AddDepartment(departmentDto);
+                    int result = employeeServices.CreateEmployee(dto);
                     if (result > 0)
                     {
                         return RedirectToAction("Index");
                     }
                     else
                     {
-                        ModelState.AddModelError("", "Something went wrong");
-                        return View(departmentDto);
+                        ModelState.AddModelError("", "Employee Can't Created");
+                        return View(dto);
                     }
 
                 }
                 catch (Exception ex)
                 {
-                    if (webHOst.IsDevelopment())
+                    if (enviroment.IsDevelopment())
                     {
                         //For development : store at file
                         logger.LogError(ex.Message);
-                        return View(departmentDto);
+                        return View(dto);
                     }
                     else
                     {
@@ -65,7 +71,7 @@ namespace IKEA.PL.Controllers
             }
             else
             {
-                return View(departmentDto);
+                return View(dto);
             }
         }
 
@@ -73,51 +79,51 @@ namespace IKEA.PL.Controllers
         public IActionResult Details(int? Id)
         {
             if (Id == null) { return BadRequest(); }
-            var Department = _departmentServices.GetDepartmentById(Id.Value);
+            var employee = employeeServices.GetEmployeeById(Id.Value);
 
-            if (Department == null) { return NotFound(); }
+            if (employee == null) { return NotFound(); }
 
-            return View(Department);
-
-
+            return View(employee);
         }
 
         [HttpGet]
         public IActionResult Edit(int? Id)
         {
             if (Id == null) { return BadRequest(); }
-            var Department = _departmentServices.GetDepartmentById(Id.Value);
+            var employee = employeeServices.GetEmployeeById(Id.Value);
 
-            if (Department == null) { return NotFound(); }
+            if (employee == null) { return NotFound(); }
 
-            var departmentVM = new DepartmentViewModel
+            var MappedEmployee = new UpdatedEmployeeDto
             {
-                Id = Department.Id,
-                Name = Department.Name,
-                Description = Department.Description,
-                Code = Department.Code
-            };
+                Id = employee.Id,
+                Name = employee.Name,
+                Age = employee.Age,
+                Address = employee.Address,
+                HiringDate = employee.HiringDate,
+                Salary = employee.Salary,
+                //Gender = employee.Gender,
+                //EmployeeType = employee.EmployeeType,
+                IsActive = employee.IsActive,
 
-            return View(departmentVM);
+            };
+            
+
+            return View(MappedEmployee);
         }
 
         [HttpPost]
         //[ValidateAntiForgeryToken]
-        public IActionResult Edit([FromRoute] int? Id, DepartmentViewModel model)
-        {
-            if (!ModelState.IsValid) { return View(model); }
 
-            var department = new UpdatedDepartmentDto
-            {
-                Id = Id.Value,
-                Name = model.Name,
-                Description = model.Description,
-                Code = model.Code
-            };
+        public IActionResult Edit(UpdatedEmployeeDto employeeDto)
+        {
+            if (!ModelState.IsValid) { return View(employeeDto); }
+
+            var Message = string.Empty;
 
             try
             {
-                int result = _departmentServices.UpdateDepartment(department);
+                int result = employeeServices.UpdateEmployee(employeeDto);
                 if (result > 0)
                 {
                     return RedirectToAction("Index");
@@ -125,17 +131,17 @@ namespace IKEA.PL.Controllers
                 else
                 {
                     ModelState.AddModelError("", "Something went wrong");
-                    return View(model);
+                    return View(employeeDto);
                 }
 
             }
             catch (Exception ex)
             {
-                if (webHOst.IsDevelopment())
+                if (enviroment.IsDevelopment())
                 {
                     //For development : store at file
                     logger.LogError(ex.Message);
-                    return View(model);
+                    return View(employeeDto);
                 }
                 else
                 {
@@ -145,44 +151,47 @@ namespace IKEA.PL.Controllers
 
             }
         }
+
+
         [HttpGet]
-        public IActionResult Delete([FromRoute] int? Id) {
+        public IActionResult Delete([FromRoute] int? Id)
+        {
             if (Id is null) { return BadRequest(); }
 
-            var Department = _departmentServices.GetDepartmentById(Id.Value);
+            var Department = employeeServices.GetEmployeeById(Id.Value);
             if (Department is null) return NotFound();
 
             return View(Department);
-        
+
         }
 
         [HttpPost]
         //[ValidateAntiForgeryToken]
 
-        public IActionResult Delete (int Id)
+        public IActionResult Delete(int Id)
         {
             bool IsDeleted = false;
             var message = string.Empty;
             try
             {
-               var IsDeletedd = _departmentServices.DeleteDepartment(Id);
+                var IsDeletedd = employeeServices.DeleteEmployee(Id);
                 if (IsDeletedd > 0)
                 {
-                     IsDeleted = true;
+                    IsDeleted = true;
                 }
-                else {  IsDeleted = false; }
+                else { IsDeleted = false; }
                 if (IsDeleted)
                 {
                     return RedirectToAction(nameof(Index));
                 }
                 else
                 {
-                    message = "Department is Not Deleted";  
+                    message = "Employee is Not Deleted";
                 }
             }
             catch (Exception ex)
             {
-                if (webHOst.IsDevelopment())
+                if (enviroment.IsDevelopment())
                 {
                     //For development : store at file
                     logger.LogError(ex.Message);
@@ -193,7 +202,7 @@ namespace IKEA.PL.Controllers
                     //production : store at table at data base
                     throw;
                 }
-                
+
             }
             ModelState.AddModelError("", message);
             return RedirectToAction(nameof(Delete), new { id = Id });

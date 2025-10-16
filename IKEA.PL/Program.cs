@@ -1,7 +1,11 @@
 //using Fluent.Infrastructure.FluentModel;
-using IKEA.BLL.Services;
-using  IKEA.DAL.Contexts;
+using IKEA.BLL.Common.MappingProfiles;
+using IKEA.BLL.Services.DepartmentServices;
+using IKEA.BLL.Services.EmployeeServices;
+using IKEA.DAL.Contexts;
 using IKEA.DAL.Repositories.DepartmentRepos;
+using IKEA.DAL.Repositories.EmployeeRepos;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 namespace IKEA.PL
@@ -13,7 +17,10 @@ namespace IKEA.PL
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
-            builder.Services.AddControllersWithViews();
+            builder.Services.AddControllersWithViews(Options =>
+            {
+                Options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());   
+            });
 
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
             {
@@ -22,6 +29,13 @@ namespace IKEA.PL
 
             builder.Services.AddScoped<IDepartmentRepository,DepartmentRepository>();
             builder.Services.AddScoped<IDepartmentServices,DepartmentServices>();
+            builder.Services.AddScoped<IEmployeeServices, EmployeeServices>();
+            builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
+
+            //builder.Services.AddAutoMapper(M=>M.AddProfile(new ProjectMapperProfile());
+            builder.Services.AddAutoMapper(cfg => { }, typeof(ProjectMapperProfile));
+
+
 
 
             var app = builder.Build();

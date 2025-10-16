@@ -1,23 +1,21 @@
 ﻿using IKEA.DAL.Contexts;
-using IKEA.DAL.Models.Department;
 using IKEA.DAL.Models.Employee;
 using IKEA.DAL.Repositories.GenericRepo;
-using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IKEA.DAL.Repositories.DepartmentRepos
+namespace IKEA.DAL.Repositories.EmployeeRepos
 {
-    public class DepartmentRepository : GenericRepository<Department>, IDepartmentRepository
+    public class EmployeeRepository :GenericRepository<Employee> ,IEmployeeRepository
     {
         private readonly ApplicationDbContext _context;
-        public DepartmentRepository(ApplicationDbContext context): base(context) 
+
+        public EmployeeRepository(ApplicationDbContext context): base(context)
         {
             _context = context;
-
         }
     }
 }
