@@ -14,9 +14,9 @@ namespace IKEA.DAL.Repositories.GenericRepo
 
         public TEntity GetById(int id);
 
-        public int Add(TEntity Item);
-        public int Update(TEntity Item);
-        public int Delete(int id);
+        public void Add(TEntity Item);
+        public void Update(TEntity Item);
+        public void Delete(int id);
     }
 }
 

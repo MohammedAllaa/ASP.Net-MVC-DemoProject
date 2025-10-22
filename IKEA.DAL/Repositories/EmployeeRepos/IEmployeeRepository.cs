@@ -11,6 +11,6 @@ namespace IKEA.DAL.Repositories.EmployeeRepos
 {
     public interface IEmployeeRepository: IGenericRepository<Employee>
     {
-       
+        public IEnumerable<Employee> GetAll(string? searchValue);
     }
 }

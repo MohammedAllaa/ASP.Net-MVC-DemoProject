@@ -40,21 +40,21 @@ namespace IKEA.DAL.Repositories.GenericRepo
         }
 
         
-        public int Add(TEntity Item)
+        public void Add(TEntity Item)
         {
             _context.Set<TEntity>().Add(Item);
-            return _context.SaveChanges();
+           
         }
-        public int Update(TEntity Item)
+        public void Update(TEntity Item)
         {
             _context.Set<TEntity>().Update(Item);
-            return _context.SaveChanges();
+           
         }
-        public int Delete(int id)
+        public void Delete(int id)
         {
             var tEntity = _context.Set<TEntity>().Find(id);
             _context.Set<TEntity>().Remove(tEntity);
-            return _context.SaveChanges();
+            
         }
 
         

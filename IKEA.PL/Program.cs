@@ -5,6 +5,7 @@ using IKEA.BLL.Services.EmployeeServices;
 using IKEA.DAL.Contexts;
 using IKEA.DAL.Repositories.DepartmentRepos;
 using IKEA.DAL.Repositories.EmployeeRepos;
+using IKEA.DAL.UOW;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -29,10 +30,12 @@ namespace IKEA.PL
             });
 
             
-            builder.Services.AddScoped<IDepartmentRepository,DepartmentRepository>();
+            //builder.Services.AddScoped<IDepartmentRepository,DepartmentRepository>();
             builder.Services.AddScoped<IDepartmentServices,DepartmentServices>();
             builder.Services.AddScoped<IEmployeeServices, EmployeeServices>();
-            builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
+            //builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
+
+            builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             //builder.Services.AddAutoMapper(M=>M.AddProfile(new ProjectMapperProfile());
             builder.Services.AddAutoMapper(cfg => { }, typeof(ProjectMapperProfile));

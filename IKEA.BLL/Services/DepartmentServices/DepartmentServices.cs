@@ -1,6 +1,7 @@
 ﻿using IKEA.BLL.Dto_s.DepartmentDto_s;
 using IKEA.BLL.Factory.DepartmentFactory;
 using IKEA.DAL.Repositories.DepartmentRepos;
+using IKEA.DAL.UOW;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,15 +12,18 @@ namespace IKEA.BLL.Services.DepartmentServices
 {
     public class DepartmentServices:IDepartmentServices
     {
-        private readonly IDepartmentRepository _repository;
-        public DepartmentServices(IDepartmentRepository repository)
+       // private readonly IDepartmentRepository _repository;
+        private readonly IUnitOfWork unitOfWork;
+
+        public DepartmentServices(IUnitOfWork unitOfWork)
         {
-            _repository = repository;
+           // _repository = repository;
+            this.unitOfWork = unitOfWork;
         }
 
         public IEnumerable<DepartmentDto> GetAllDepartments()
         {
-            var Departments = _repository.GetAll();
+            var Departments = unitOfWork.DepartmentRepository.GetAll();
 
             //var MappedDepartments = Departments.Select(d => new DepartmentDto
             //{
@@ -41,7 +45,7 @@ namespace IKEA.BLL.Services.DepartmentServices
 
         public DepartmentDetailsDto GetDepartmentById(int id)
         {
-            var Department = _repository.GetById(id);
+            var Department = unitOfWork.DepartmentRepository.GetById(id);
             if (Department == null)
             {
                 return null;
@@ -54,18 +58,21 @@ namespace IKEA.BLL.Services.DepartmentServices
         public int AddDepartment(CreateDepartmentDto departmentDto)
         {
             var department = departmentDto.ToDepartment();
-            return _repository.Add(department);
+            unitOfWork.DepartmentRepository.Add(department);
+            return unitOfWork.Complete();
         }
 
         public int UpdateDepartment(UpdatedDepartmentDto departmentDto)
         {
             var department = departmentDto.FromUpdatedDepartment();
-            return _repository.Update(department);
+            unitOfWork.DepartmentRepository.Update(department);
+            return unitOfWork.Complete();
         }
 
         public int DeleteDepartment(int id)
         {
-            return _repository.Delete(id);
+            unitOfWork.DepartmentRepository.Delete(id);
+            return unitOfWork.Complete();
         }
     }
 }

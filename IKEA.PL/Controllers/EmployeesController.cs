@@ -25,10 +25,13 @@ namespace IKEA.PL.Controllers
            // this.departmentServices = departmentServices;
         }
 
-        public IActionResult Index()
+        public IActionResult Index(string? searchValue)
         {
-            var Employees = employeeServices.GetAllEmployees();
-            return View(Employees);
+            if (searchValue == null)
+                return View(employeeServices.GetAllEmployees());
+            else
+                return View(employeeServices.GetSearchedEmployyes(searchValue));
+
         }
         [HttpGet]
         public IActionResult Create()
