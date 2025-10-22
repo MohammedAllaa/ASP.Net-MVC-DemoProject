@@ -32,7 +32,7 @@ namespace IKEA.DAL.Models.Employee
 
         public int? DepartmentId { get; set; }
 
-        public Department.Department? Department { get; set; }
+        public virtual Department.Department? Department { get; set; }
 
 
     }

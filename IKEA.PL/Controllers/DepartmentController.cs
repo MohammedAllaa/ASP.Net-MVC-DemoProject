@@ -20,6 +20,8 @@ namespace IKEA.PL.Controllers
 
         public IActionResult Index()
         {
+            ViewData["Msg"] = "Hello VD";
+            ViewBag.Msg = "Hello VB";
             var departments = _departmentServices.GetAllDepartments();
             return View(departments);
         }
@@ -38,10 +40,12 @@ namespace IKEA.PL.Controllers
                     int result = _departmentServices.AddDepartment(departmentDto);
                     if (result > 0)
                     {
+                        TempData["Msg"] = $"Department {departmentDto.Name} Created Successfully";
                         return RedirectToAction("Index");
                     }
                     else
                     {
+                        TempData["Msg"] = $"Department can not Created";
                         ModelState.AddModelError("", "Something went wrong");
                         return View(departmentDto);
                     }

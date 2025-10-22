@@ -10,7 +10,7 @@ namespace IKEA.DAL.Repositories.GenericRepo
 {
     public interface IGenericRepository<TEntity> where TEntity : BaseEntity
     {
-        public IEnumerable<TEntity> GetAll(bool WithNoTracking = false);
+        public IQueryable<TEntity> GetAll(bool WithNoTracking = false);
 
         public TEntity GetById(int id);
 

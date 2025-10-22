@@ -22,6 +22,10 @@ namespace IKEA.DAL.Configurations
                 (empGender) => empGender.ToString(), (gender) => (Gender)Enum.Parse
                 (typeof(Gender),gender));
 
+            //builder.Property(d => d.Gender)
+            //.HasConversion<string>(); // this is another way to convert enum to string
+
+
             builder.Property(d => d.EmployeeType).HasConversion(
                 (Etype) => Etype.ToString(), (Type) => (EmployeeType)Enum.Parse
                 (typeof(EmployeeType), Type));

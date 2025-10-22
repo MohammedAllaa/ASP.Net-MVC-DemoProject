@@ -1,6 +1,9 @@
 ﻿@model IEnumerable<DepartmentDto>
 @{
     ViewData["Title"] = "Index";
+
+    string message = ViewData["msge"] as string;  // cast ViewData to string   
+    string msg = ViewBag.msg;                    // dynamic type no need to cast
 }
 
 <div class="card border border-primary">
@@ -8,6 +11,11 @@
         <h1 class="text-white">All Departments</h1>
     </div>
     <div class="card-body">
+        @if (TempData["Msg"] != null)
+        {
+            <div class="alert alert-success">@TempData["Msg"]</div>
+        }
+        
         <a class="btn btn-success mb-3" asp-action="Create">Create New Department</a>
         @if (Model.Any())
         {

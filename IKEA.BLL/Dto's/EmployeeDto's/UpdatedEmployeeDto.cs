@@ -31,8 +31,10 @@ namespace IKEA.BLL.Dto_s.EmployeeDto_s
         public string? PhoneNumber { get; set; }
         [Display(Name = "Hiring Date")]
         public DateOnly HiringDate { get; set; }
-        public Gender Gender { get; set; }
-        public EmployeeType EmployeeType { get; set; }
+        public String Gender { get; set; }
+        public string EmployeeType { get; set; }
+
+        [Display(Name = "Department")]
 
         public int? DepartmentId { get; set; }
 

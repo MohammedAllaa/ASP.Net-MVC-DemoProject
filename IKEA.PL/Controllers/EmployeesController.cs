@@ -1,5 +1,6 @@
 ﻿using IKEA.BLL.Dto_s.DepartmentDto_s;
 using IKEA.BLL.Dto_s.EmployeeDto_s;
+using IKEA.BLL.Services.DepartmentServices;
 using IKEA.BLL.Services.EmployeeServices;
 using IKEA.DAL.Models.Employee;
 using IKEA.PL.ViewModel.DepartmentVMs;
@@ -14,12 +15,14 @@ namespace IKEA.PL.Controllers
         private readonly IEmployeeServices employeeServices;
         private readonly ILogger<EmployeesController> logger;
         private readonly IWebHostEnvironment enviroment;
+        //private readonly IDepartmentServices departmentServices;
 
-        public EmployeesController(IEmployeeServices employeeServices,ILogger<EmployeesController> logger,IWebHostEnvironment enviroment)
+        public EmployeesController(IEmployeeServices employeeServices,ILogger<EmployeesController> logger,IWebHostEnvironment enviroment )
         {
             this.employeeServices = employeeServices;
             this.logger = logger;
             this.enviroment = enviroment;
+           // this.departmentServices = departmentServices;
         }
 
         public IActionResult Index()
@@ -30,6 +33,7 @@ namespace IKEA.PL.Controllers
         [HttpGet]
         public IActionResult Create()
         {
+            //ViewData["Departments"] = departmentServices.GetAllDepartments();
             return View();
         }
 
@@ -101,9 +105,11 @@ namespace IKEA.PL.Controllers
                 Age = employee.Age,
                 Address = employee.Address,
                 HiringDate = employee.HiringDate,
+                Email = employee.Email,
+                PhoneNumber = employee.PhoneNumber,
                 Salary = employee.Salary,
-                //Gender = employee.Gender,
-                //EmployeeType = employee.EmployeeType,
+                Gender = employee.Gender,
+                EmployeeType = employee.EmployeeType,
                 IsActive = employee.IsActive,
 
             };

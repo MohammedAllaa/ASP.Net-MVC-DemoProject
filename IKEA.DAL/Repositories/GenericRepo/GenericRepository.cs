@@ -19,12 +19,18 @@ namespace IKEA.DAL.Repositories.GenericRepo
             this._context = context;
         }
 
-        public IEnumerable<TEntity> GetAll(bool WithNoTracking = false)
+        public IQueryable<TEntity> GetAll(bool WithNoTracking = false)
         {
             if (WithNoTracking)
-                return _context.Set<TEntity>().ToList();
+                return _context.Set<TEntity>();
             else
-                return _context.Set<TEntity>().AsNoTracking().ToList();
+                return _context.Set<TEntity>().AsNoTracking();
+            // fixed: when WithNoTracking == true return AsNoTracking()
+
+            //var query = _context.Set<TEntity>().AsQueryable();
+            //if (WithNoTracking)
+            //    return query.AsNoTracking();
+            //return query;
         }
 
         public TEntity GetById(int id)
