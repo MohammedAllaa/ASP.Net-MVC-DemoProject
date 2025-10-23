@@ -26,5 +26,7 @@ namespace IKEA.BLL.Dto_s.EmployeeDto_s
 
         public string DepartmentName { get; set; }
 
+        public string? ImageName { get; set; }
+
     }
 }

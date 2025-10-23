@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using IKEA.BLL.Common.Services.Attachments;
 using IKEA.BLL.Dto_s.DepartmentDto_s;
 using IKEA.BLL.Dto_s.EmployeeDto_s;
 using IKEA.DAL.Models.Employee;
@@ -19,12 +20,14 @@ namespace IKEA.BLL.Services.EmployeeServices
        // private readonly IEmployeeRepository _employeeRepository;
         private readonly IUnitOfWork unitOfWork;
         private readonly IMapper mapper;
+        private readonly IAttachmentServices attachmentServices;
 
-        public EmployeeServices(IUnitOfWork unitOfWork,IMapper mapper)
+        public EmployeeServices(IUnitOfWork unitOfWork,IMapper mapper,IAttachmentServices attachmentServices)
         {
             //this._employeeRepository = employeeRepository;
             this.unitOfWork = unitOfWork;
             this.mapper = mapper;
+            this.attachmentServices = attachmentServices;
         }
 
         public IEnumerable<EmployeeDto> GetAllEmployees()
@@ -48,12 +51,28 @@ namespace IKEA.BLL.Services.EmployeeServices
             Emp.LastModifiedBy = 1;
             Emp.LastModifiedOn = DateTime.Now;
 
-             unitOfWork.EmployeeRepository.Add(Emp);
+            if (dto.Image is not null)
+            {
+                Emp.ImageName = attachmentServices.UploadAImage(dto.Image,"Images");
+            }
+
+                unitOfWork.EmployeeRepository.Add(Emp);
             return unitOfWork.Complete();
         }
         public int UpdateEmployee(UpdatedEmployeeDto dto)
         {
             var Emp = mapper.Map<UpdatedEmployeeDto, Employee>(dto);
+
+            if(dto.Image is not null)
+            {
+                if (dto.ImageName is not null)
+                {
+                    var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Files", "Images", dto.ImageName);
+                    attachmentServices.DeleteImage(filePath);
+                }
+                Emp.ImageName = attachmentServices.UploadAImage(dto.Image, "Images");
+            }
+
             Emp.LastModifiedBy = 1;
             Emp.LastModifiedOn = DateTime.Now;
             unitOfWork.EmployeeRepository.Update(Emp);
@@ -63,6 +82,12 @@ namespace IKEA.BLL.Services.EmployeeServices
         {
             if (id is not null)
             {
+                var emp = unitOfWork.EmployeeRepository.GetById(id.Value);
+                if (emp.ImageName is not null)
+                {
+                    var filePath = Path.Combine(Directory.GetCurrentDirectory(),"wwwroot","Files","Images",emp.ImageName);
+                    attachmentServices.DeleteImage(filePath);
+                }
                 unitOfWork.EmployeeRepository.Delete(id.Value);
                 return unitOfWork.Complete();
             }

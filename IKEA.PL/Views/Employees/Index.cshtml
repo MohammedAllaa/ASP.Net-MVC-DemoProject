@@ -46,6 +46,11 @@
                     <td>@employee.Email</td>
                     <td>@employee.EmployeeType</td>
                     <td>@employee.DepartmentName</td>
+                    @* <td class="col-3">
+                        <img src="@(Url.Content("~/Files/Images/" + (string.IsNullOrEmpty(employee.ImageName) ? "default.png" : employee.ImageName)))"
+                             class="img-fluid rounded-3 w-100 h-100 img-thumbnail"
+                             alt="Employee Image" />
+                    </td> *@
                     <td>@employee.Age</td>
                     <td>@employee.Salary</td>
                     <td>@employee.IsActive</td>

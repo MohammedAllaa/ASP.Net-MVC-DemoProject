@@ -1,5 +1,6 @@
 //using Fluent.Infrastructure.FluentModel;
 using IKEA.BLL.Common.MappingProfiles;
+using IKEA.BLL.Common.Services.Attachments;
 using IKEA.BLL.Services.DepartmentServices;
 using IKEA.BLL.Services.EmployeeServices;
 using IKEA.DAL.Contexts;
@@ -36,7 +37,7 @@ namespace IKEA.PL
             //builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
 
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-
+            builder.Services.AddScoped<IAttachmentServices, AttachmentServices>();
             //builder.Services.AddAutoMapper(M=>M.AddProfile(new ProjectMapperProfile());
             builder.Services.AddAutoMapper(cfg => { }, typeof(ProjectMapperProfile));
 

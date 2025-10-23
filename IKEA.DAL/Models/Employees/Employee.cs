@@ -34,6 +34,8 @@ namespace IKEA.DAL.Models.Employee
 
         public virtual Department.Department? Department { get; set; }
 
+        public string? ImageName { get; set; }
+
 
     }
 }
