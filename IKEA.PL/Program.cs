@@ -4,9 +4,12 @@ using IKEA.BLL.Common.Services.Attachments;
 using IKEA.BLL.Services.DepartmentServices;
 using IKEA.BLL.Services.EmployeeServices;
 using IKEA.DAL.Contexts;
+using IKEA.DAL.Models.Users;
 using IKEA.DAL.Repositories.DepartmentRepos;
 using IKEA.DAL.Repositories.EmployeeRepos;
 using IKEA.DAL.UOW;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -41,7 +44,16 @@ namespace IKEA.PL
             //builder.Services.AddAutoMapper(M=>M.AddProfile(new ProjectMapperProfile());
             builder.Services.AddAutoMapper(cfg => { }, typeof(ProjectMapperProfile));
 
+            builder.Services.AddIdentity<ApplicationUser,IdentityRole>()
+                             .AddEntityFrameworkStores<ApplicationDbContext>() ;
 
+            builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie(options =>
+                {
+                    options.LoginPath = "/Account/Login";
+                    options.LogoutPath = "/Account/Logout";
+                    options.AccessDeniedPath = "/Account/AccessDenied";
+                });
 
 
             var app = builder.Build();
@@ -49,6 +61,8 @@ namespace IKEA.PL
            
 
             app.UseRouting();
+            app.UseAuthentication();
+            app.UseAuthorization();
 
 
             app.MapStaticAssets();

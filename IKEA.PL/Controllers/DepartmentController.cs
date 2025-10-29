@@ -1,10 +1,13 @@
 ﻿using IKEA.BLL.Dto_s.DepartmentDto_s;
 using IKEA.BLL.Services.DepartmentServices;
 using IKEA.PL.ViewModel.DepartmentVMs;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace IKEA.PL.Controllers
 {
+    [Authorize (Roles = "NUser")]
+
     public class DepartmentController : Controller
     {
         private readonly IDepartmentServices _departmentServices;

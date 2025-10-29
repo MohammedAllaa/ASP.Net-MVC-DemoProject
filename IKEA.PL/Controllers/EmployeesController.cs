@@ -5,11 +5,14 @@ using IKEA.BLL.Services.EmployeeServices;
 using IKEA.DAL.Models.Employee;
 using IKEA.PL.ViewModel.DepartmentVMs;
 using Microsoft.AspNetCore;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 
 namespace IKEA.PL.Controllers
 {
+    [Authorize]
+
     public class EmployeesController : Controller
     {
         private readonly IEmployeeServices employeeServices;
@@ -34,6 +37,7 @@ namespace IKEA.PL.Controllers
 
         }
         [HttpGet]
+        [Authorize(Roles ="NUser")]
         public IActionResult Create()
         {
             //ViewData["Departments"] = departmentServices.GetAllDepartments();
