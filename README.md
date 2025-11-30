@@ -288,7 +288,7 @@ wwwroot/files/Images/
 
 Clone the repository:
 
-git clone https://github.com/yourusername/IKEA-MVC.git
+git clone https://github.com/MohammedAllaa/IKEA-MVC.git
 
 
 Update appsettings.json with your SQL Server connection string.
